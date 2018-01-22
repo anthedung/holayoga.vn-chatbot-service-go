@@ -1,0 +1,5 @@
+test:
+  image: artifactory.ges.symantec.com/ase-docker/golang:1.8
+  volumes:
+    - .:/go/src/vn.holayoga.dialogflow.service
+  working_dir: /go/src/vn.holayoga.dialogflow.service

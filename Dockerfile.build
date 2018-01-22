@@ -1,0 +1,16 @@
+FROM golang:1.7-alpine
+
+ADD . /go/src/vn.holayoga.dialogflow.service
+
+WORKDIR /go/src/vn.holayoga.dialogflow.service
+
+RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+  && apk update \
+  && apk add glide@edge git \
+  && glide install \
+  && rm -rf /var/cache/apk/* \
+  && cd ./main \
+  && go build -o ../holayoga-dialogflow-service \
+  && cd .. \
+  && mkdir /build \
+  && cp holayoga-dialogflow-service /build/
