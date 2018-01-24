@@ -36,13 +36,12 @@ func (cache *YogaCacheDao) RefreshCacheIfUninitialized(ctx context.Context) erro
 	return nil
 }
 
-func NewYogaCategoryCache(freqHours int, projectId string, categoryDataStoreEntity string) (*YogaCacheDao, error) {
+func NewYogaCategoryCache(freqHours int, categoryDataStoreEntity string) (*YogaCacheDao, error) {
 	// if ctx is instantiated,
 	// due to GAE Standard environment appengine context must be available from inflight request
 	var cacheDao = &YogaCacheDao{
 		updateFreqInHours:       time.Hour * time.Duration(freqHours),
 		RWMutex:                 &sync.RWMutex{},
-		ProjectID:               projectId,
 		CategoryDataStoreEntity: categoryDataStoreEntity,
 	}
 

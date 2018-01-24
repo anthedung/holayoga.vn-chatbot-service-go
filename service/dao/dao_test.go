@@ -3,6 +3,8 @@ package dao
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/appengine/aetest"
+	"vn.holayoga.dialogflow.service/model"
 )
 
 var testCache *YogaCacheDao
@@ -10,14 +12,29 @@ var categoryEntityTest = "CategoryUnitTest"
 
 func init() {
 	/* load test data */
-	testCache, _ = NewYogaCategoryCache(1, "newagent-4790c", categoryEntityTest)
+	testCache, _ = NewYogaCategoryCache(1, categoryEntityTest)
+	ctx, done, err := aetest.NewContext()
+	model.InitDataStore(ctx, categoryEntityTest)
+
+	if err != nil {
+		panic("cannot init ctx")
+	}
+	defer done()
+	testCache.RefreshCache(ctx)
 }
 
 func TestNewYogaCategoryCache(t *testing.T) {
-	dao, err := NewYogaCategoryCache(1, "newagent-4790c", categoryEntityTest)
+	dao, err := NewYogaCategoryCache(1, categoryEntityTest)
+	ctx, done, err := aetest.NewContext()
+	model.InitDataStore(ctx, categoryEntityTest)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer done()
+	dao.RefreshCache(ctx)
 
 	assert.Nil(t, err)
-
 	assert.NotZero(t, len(dao.GetCategories()))
 }
 

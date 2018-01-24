@@ -13,20 +13,17 @@ import (
 	"flag"
 )
 
-var (
-	projectId = flag.String("project-id", "newagent-4790c", "Project Id to populate store")
-)
-
 func init() {
 	flag.Parse()
 }
 
+//TODO: Authenticate service
 func main() {
 	router := mux.NewRouter()
 
 	// Init DAO for datastore without context
 	// context to be set
-	dao, err := dao.NewYogaCategoryCache(12, *projectId, dao.CategoryDataStoreEntity)
+	dao, err := dao.NewYogaCategoryCache(12, dao.CategoryDataStoreEntity)
 	if err != nil {
 		panic(err)
 	}
