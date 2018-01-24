@@ -1,0 +1,43 @@
+curl -XPOST localhost:8080/webhook -d '{
+    "originalDetectIntentRequest": {
+        "payload": {}
+    },
+    "queryResult": {
+        "action": "show_poses_in_category",
+        "allRequiredParamsPresent": true,
+        "diagnosticInfo": {},
+        "fulfillmentMessages": [
+            {
+                "text": {
+                    "text": [
+                        ""
+                    ]
+                }
+            }
+        ],
+        "intent": {
+            "displayName": "Chỉ cho tôi yoga giảm cân",
+            "name": "projects/newagent-4790c/agent/intents/caec6b5f-3860-47b7-a70c-e07366288c61"
+        },
+        "intentDetectionConfidence": 1,
+        "languageCode": "en",
+        "outputContexts": [
+            {
+                "lifespanCount": 5,
+                "name": "projects/newagent-4790c/agent/sessions/c0a7bc20-731e-4a09-aae9-c1f61f4ea1ff/contexts/choosing-pose-in-a-category",
+                "parameters": {
+                    "yoga_pose": "cơ bản",
+                    "yoga_pose.original": "",
+                    "yoga_category.original": "yoga cơ bản",
+                    "yoga_category": "co-ban"
+                }
+            }
+        ],
+        "parameters": {
+            "yoga_category": "co-ban"
+        },
+        "queryText": "bài tập yoga cơ bản"
+    },
+    "responseId": "ea52c2de-59ac-4950-a974-b5ebdc1b7f0c",
+    "session": "projects/newagent-4790c/agent/sessions/c0a7bc20-731e-4a09-aae9-c1f61f4ea1ff"
+}'
