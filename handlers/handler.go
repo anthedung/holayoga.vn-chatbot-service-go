@@ -1,4 +1,4 @@
-package vn_holayoga_dialogflow_service
+package handlers
 
 import (
 	"vn.holayoga.dialogflow.service/actor"
@@ -9,15 +9,19 @@ import (
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 	"vn.holayoga.dialogflow.service/utils"
+	"vn.holayoga.dialogflow.service/test"
+	hg "vn.holayoga.dialogflow.service"
 )
 
 type WebHookHandler struct {
 	actionManager *actor.ActionManager // manage all actions
+	config        hg.Config
 }
 
-func NewWebHookHandler(actionManager *actor.ActionManager) *WebHookHandler {
+func NewWebHookHandler(actionManager *actor.ActionManager, config hg.Config) *WebHookHandler {
 	h := new(WebHookHandler)
 	h.actionManager = actionManager
+	h.config = config
 
 	return h
 }
@@ -39,8 +43,7 @@ func (h *WebHookHandler) Serve(w http.ResponseWriter, req *http.Request) {
 
 	webhookReq := dialogflow.WebhookRequest{}
 	err = json.Unmarshal(body, &webhookReq)
-	utils.PrettyPrintWithCtx(ctx, "webhookReq:", webhookReq)
-	log.Errorf(ctx, "webhookReq:", webhookReq)
+	utils.DebugfPrettyPrintWithCtx(ctx, "webhookReq:", webhookReq)
 
 	if err != nil {
 		log.Errorf(ctx, "err unmarshal ", err.Error())
@@ -62,6 +65,7 @@ func (h *WebHookHandler) Serve(w http.ResponseWriter, req *http.Request) {
 	// 3. return processed response
 	webhookRespByte, err := json.Marshal(webhookResp)
 	if err != nil {
+		utils.DebugfPrettyPrintWithCtx(ctx, "webhookRespByte err:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -78,6 +82,14 @@ func (h *WebHookHandler) RefreshCache(w http.ResponseWriter, req *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(http.StatusResetContent)
+}
+
+func (h *WebHookHandler) Init(w http.ResponseWriter, req *http.Request) {
+	ctx := appengine.NewContext(req)
+
+	test.InitDataStore(ctx, h.config.Datastore.CategoryKind)
 
 	w.WriteHeader(http.StatusResetContent)
 }

@@ -5,7 +5,7 @@ import (
 	"flag"
 	"google.golang.org/appengine"
 	"net/http"
-	"vn.holayoga.dialogflow.service/model"
+	"vn.holayoga.dialogflow.service/test"
 )
 
 var (
@@ -21,7 +21,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		model.InitDataStore(appengine.NewContext(r), *entity)
+		test.InitDataStore(appengine.NewContext(r), *entity)
 	})
 
 	appengine.Main()

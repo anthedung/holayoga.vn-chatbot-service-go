@@ -4,7 +4,7 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/appengine/aetest"
-	"vn.holayoga.dialogflow.service/model"
+	"vn.holayoga.dialogflow.service/test"
 )
 
 var testCache *YogaCacheDao
@@ -14,7 +14,7 @@ func init() {
 	/* load test data */
 	testCache, _ = NewYogaCategoryCache(1, categoryEntityTest)
 	ctx, done, err := aetest.NewContext()
-	model.InitDataStore(ctx, categoryEntityTest)
+	test.InitDataStore(ctx, categoryEntityTest)
 
 	if err != nil {
 		panic("cannot init ctx")
@@ -26,7 +26,7 @@ func init() {
 func TestNewYogaCategoryCache(t *testing.T) {
 	dao, err := NewYogaCategoryCache(1, categoryEntityTest)
 	ctx, done, err := aetest.NewContext()
-	model.InitDataStore(ctx, categoryEntityTest)
+	test.InitDataStore(ctx, categoryEntityTest)
 
 	if err != nil {
 		t.Fatal(err)

@@ -6,15 +6,28 @@ import (
 	"github.com/gorilla/handlers"
 	"os"
 	hg "vn.holayoga.dialogflow.service"
+	hghandlers "vn.holayoga.dialogflow.service/handlers"
 	"vn.holayoga.dialogflow.service/actor"
 	"google.golang.org/appengine"
 	"vn.holayoga.dialogflow.service/service/dao"
 	"vn.holayoga.dialogflow.service/service"
 	"flag"
+	"vn.holayoga.dialogflow.service/utils"
+)
+
+var (
+	config *hg.Config
+	entity = flag.String("entity", "", "Entity to populate")
 )
 
 func init() {
 	flag.Parse()
+	config = hg.NewDefaultConfig()
+	if len(*entity) > 0 {
+		config.Datastore.CategoryKind = *entity
+	}
+
+	utils.DebugfPrettyPrint("config", config)
 }
 
 //TODO: Authenticate service
@@ -23,7 +36,7 @@ func main() {
 
 	// Init DAO for datastore without context
 	// context to be set
-	dao, err := dao.NewYogaCategoryCache(12, dao.CategoryDataStoreEntity)
+	dao, err := dao.NewYogaCategoryCache(12, *config)
 	if err != nil {
 		panic(err)
 	}
@@ -38,9 +51,10 @@ func main() {
 	a := actor.NewActionManager("FACEBOOK", svc)
 
 	// Init Handler
-	h := hg.NewWebHookHandler(a)
+	h := hghandlers.NewWebHookHandler(a, *config)
 
-	router.HandleFunc("/refresh/cache", h.RefreshCache).Methods("POST")
+	router.HandleFunc("/cache/refresh", h.RefreshCache).Methods("POST")
+	router.HandleFunc("/cache/init", h.Init).Methods("POST")
 	router.HandleFunc("/webhook", h.Serve).Methods("POST")
 
 	// apache logging style

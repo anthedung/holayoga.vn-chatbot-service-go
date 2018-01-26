@@ -8,7 +8,7 @@ import (
 	"time"
 	"errors"
 	"google.golang.org/appengine/log"
-	"github.com/sirupsen/logrus"
+	"vn.holayoga.dialogflow.service"
 )
 
 const (
@@ -36,13 +36,13 @@ func (cache *YogaCacheDao) RefreshCacheIfUninitialized(ctx context.Context) erro
 	return nil
 }
 
-func NewYogaCategoryCache(freqHours int, categoryDataStoreEntity string) (*YogaCacheDao, error) {
+func NewYogaCategoryCache(freqHours int, config vn_holayoga_dialogflow_service.Config) (*YogaCacheDao, error) {
 	// if ctx is instantiated,
 	// due to GAE Standard environment appengine context must be available from inflight request
 	var cacheDao = &YogaCacheDao{
 		updateFreqInHours:       time.Hour * time.Duration(freqHours),
 		RWMutex:                 &sync.RWMutex{},
-		CategoryDataStoreEntity: categoryDataStoreEntity,
+		CategoryDataStoreEntity: config.Datastore.CategoryKind,
 	}
 
 	return cacheDao, nil
@@ -88,7 +88,6 @@ func (cache *YogaCacheDao) RefreshCache(ctx context.Context) error {
 	log.Infof(ctx, "refreshing cache...")
 
 	// Updating categories
-	log.Infof(ctx, "retrieveCategories...")
 	categories, err := cache.retrieveCategories(ctx)
 
 	if err != nil {
@@ -101,7 +100,6 @@ func (cache *YogaCacheDao) RefreshCache(ctx context.Context) error {
 	cache.Unlock()
 
 	log.Infof(ctx, "cache refreshed...")
-	logrus.Info("cache refreshed...")
 	return nil
 }
 

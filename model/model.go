@@ -7,16 +7,16 @@ import (
 )
 
 type YogaCategory struct {
-	Name            string                                             // yoga co ban
-	Poses           []YogaPose     `datastore:"-" `                    // list of poses in this category
-	PosesStr        string         `datastore:"Poses," json:"-"`       // [PropertyLoadSaver]
-	VideoCourses    []VideoCourses `datastore:"-"`                     // khoa co ban, khoa 30 ngay
-	VideoCoursesStr string         `datastore:"VideoCourses" json:"-"` // [PropertyLoadSaver]
-	Articles        []ArticleResource                                  // blog post
-	ID              int64                                              // The integer ID used in the datastore.
+	Name            string                                           // yoga co ban
+	Poses           []YogaPose    `datastore:"-" `                   // list of poses in this category
+	PosesStr        string        `datastore:"Poses," json:"-"`      // [PropertyLoadSaver]
+	VideoCourses    []VideoCourse `datastore:"-"`                    // khoa co ban, khoa 30 ngay
+	VideoCoursesStr string        `datastore:"VideoCourse" json:"-"` // [PropertyLoadSaver]
+	Articles        []ArticleResource                                // blog post
+	ID              int64                                            // The integer ID used in the datastore.
 }
 
-type VideoCourses struct {
+type VideoCourse struct {
 	Name        string          `datastore:",omitempty"` // yoga co ban
 	Videos      []VideoResource `datastore:",omitempty"` // key of videos
 	Description string
@@ -38,12 +38,12 @@ func (cat *YogaCategory) Load(ps []datastore.Property) error {
 	json.Unmarshal([]byte(cat.PosesStr), &poses)
 	cat.Poses = poses
 
-	// Load []VideoCourses
-	var courses []VideoCourses
+	// Load []VideoCourse
+	var courses []VideoCourse
 	json.Unmarshal([]byte(cat.VideoCoursesStr), &courses)
 	cat.VideoCourses = courses
 
-	return datastore.LoadStruct(cat, ps)
+	return nil
 }
 
 func (cat *YogaCategory) Save() ([]datastore.Property, error) {
@@ -68,11 +68,12 @@ type ImageResource struct {
 }
 
 type VideoResource struct {
-	Name     string `datastore:",omitempty"` // con mèo
-	Url      string `datastore:",omitempty"` //
-	Tag      string `datastore:",omitempty"` // dung, sai goc
-	Remark   string `datastore:",omitempty"` // e.g. dong tac nay tot cho blah blah => this should be in another table, dictionary
-	Duration int    `datastore:",omitempty"` // duration in minute
+	Name         string `datastore:",omitempty"` // con mèo
+	Url          string `datastore:",omitempty"` //
+	Tag          string `datastore:",omitempty"` // dung, sai goc
+	Remark       string `datastore:",omitempty"` // e.g. dong tac nay tot cho blah blah => this should be in another table, dictionary
+	Duration     int    `datastore:",omitempty"` // duration in minute
+	ThumbnailUrl string `datastore:",omitempty"` //video thumbnail
 }
 
 type ArticleResource struct {

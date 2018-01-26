@@ -8,21 +8,21 @@ import (
 )
 
 // utility function for pretty print struct
-func PrettyPrintWithCtx(ctx context.Context, title string, v interface{}) error {
+func DebugfPrettyPrintWithCtx(ctx context.Context, title string, v interface{}) error {
 	out, err := json.MarshalIndent(v, "", "    ")
 
 	if err == nil {
-		log.Infof(ctx, title+": "+string(out))
+		log.Debugf(ctx, title+": "+string(out))
 	}
 
 	return err
 }
 
-func PrettyPrint(title string, v interface{}) error {
+func DebugfPrettyPrint(title string, v interface{}) error {
 	out, err := json.MarshalIndent(v, "", "    ")
 
 	if err == nil {
-		logrus.Info(title + ": " + string(out))
+		logrus.Debug(title + ": " + string(out))
 	}
 
 	return err
